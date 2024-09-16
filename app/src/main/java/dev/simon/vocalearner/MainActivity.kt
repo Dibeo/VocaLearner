@@ -1,0 +1,31 @@
+package dev.simon.vocalearner
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.tooling.preview.Preview
+import dev.simon.vocalearner.ui.TranslationScreen
+import dev.simon.vocalearner.ui.theme.TraductionAppTheme
+
+class MainActivity : ComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            TraductionAppTheme {
+                // A surface container using the background color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    // Call TranslationScreen with the context
+                    TranslationScreen(context = this)
+                }
+            }
+        }
+    }
+}
