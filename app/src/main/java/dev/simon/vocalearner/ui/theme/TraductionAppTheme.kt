@@ -5,16 +5,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColorScheme(
-    primary = Purple200,
-    secondary = Teal200
+    primary = Color.White, // Couleur du texte principal en blanc
+    onPrimary = Color.Black, // Couleur du texte sur fond primaire
+    background = Color.Black, // Arrière-plan en noir
+    surface = Color.DarkGray, // Surface d'arrière-plan pour des éléments secondaires
+    onBackground = Color.White, // Couleur du texte sur fond d'arrière-plan
+    onSurface = Color.White, // Couleur du texte sur surface
+    secondary = Teal200 // Garder la couleur secondaire si elle convient
 )
 
 private val LightColorPalette = lightColorScheme(
-    primary = Purple500,
-    secondary = Teal200
-    // Other default colors to override
+    primary = Color.Black, // Couleur du texte principal en noir
+    onPrimary = Color.White, // Couleur du texte sur fond primaire
+    background = Color(0xFFD8DBE2), // Arrière-plan en blanc
+    surface = Color.LightGray, // Surface d'arrière-plan pour des éléments secondaires
+    onBackground = Color.Black, // Couleur du texte sur fond d'arrière-plan
+    onSurface = Color.Black, // Couleur du texte sur surface
+    secondary = Teal200 // Garder la couleur secondaire si elle convient
+    // Autres couleurs à personnaliser si nécessaire
 )
 
 @Composable
