@@ -12,12 +12,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.simon.vocalearner.ui.theme.TraductionAppTheme
-import dev.simon.vocalearner.utils.readCsvFromRaw // Import your CSV reader function
+import dev.simon.vocalearner.utils.matchWordsById // Import your new CSV matching function
 import dev.simon.vocalearner.R // Import the R class for accessing raw resources
 
 @Composable
 fun TranslationScreen(context: Context) {
-    val wordList by remember { mutableStateOf(readCsvFromRaw(context)) }
+    val wordList by remember { mutableStateOf(matchWordsById(context)) } // Utilise la nouvelle fonction
     var currentWord by remember { mutableStateOf(wordList.random()) }
     var userInput by remember { mutableStateOf("") }
     var feedbackMessage by remember { mutableStateOf("") }
@@ -29,7 +29,7 @@ fun TranslationScreen(context: Context) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        FrenchWordDisplay(word = currentWord.first)
+        FrenchWordDisplay(word = currentWord.first) // Affiche le mot français
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -39,8 +39,8 @@ fun TranslationScreen(context: Context) {
 
         CheckButton(onCheck = {
             feedbackMessage = if (userInput.lowercase() == currentWord.second.lowercase()) {
-                currentWord = wordList.random() // If correct, pick a new word
-                userInput = "" // Reset the input field
+                currentWord = wordList.random() // Si correct, choisir un nouveau mot
+                userInput = "" // Réinitialiser le champ de saisie
                 "Correct!"
             } else {
                 "Incorrect! Try again."
@@ -50,6 +50,10 @@ fun TranslationScreen(context: Context) {
         Spacer(modifier = Modifier.height(20.dp))
 
         FeedbackMessage(feedbackMessage)
+
+        Spacer(modifier= Modifier.height((20.dp)))
+
+        ChangeWordButton(onChangeWord = {currentWord = wordList.random()})
     }
 }
 
@@ -84,6 +88,17 @@ fun CheckButton(onCheck: () -> Unit) {
     }
 }
 
+@Composable
+fun ChangeWordButton(onChangeWord: () -> Unit) {
+    Button(onClick = onChangeWord) {
+        Text("Change Word")
+    }
+}
+
+
+/**
+ * send message method with personalized style
+ */
 @Composable
 fun FeedbackMessage(message: String) {
     Text(text = message, style = MaterialTheme.typography.bodyLarge)
