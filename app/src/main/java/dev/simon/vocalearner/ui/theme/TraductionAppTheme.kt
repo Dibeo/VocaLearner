@@ -8,24 +8,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColorScheme(
-    primary = Color.White, // Couleur du texte principal en blanc
-    onPrimary = Color.Black, // Couleur du texte sur fond primaire
-    background = Color.Black, // Arrière-plan en noir
-    surface = Color.DarkGray, // Surface d'arrière-plan pour des éléments secondaires
-    onBackground = Color.White, // Couleur du texte sur fond d'arrière-plan
-    onSurface = Color.White, // Couleur du texte sur surface
-    secondary = Teal200 // Garder la couleur secondaire si elle convient
+    primary = Color(0xFFD9E0A4), // Couleur du texte principal en blanc
+    onPrimary = Color(0xFFD9E0A4), // Couleur du texte sur fond primaire
+    background = Color(0xFF19485F), // Arrière-plan en noir
+    surface = Color(0xFFD9E0A4), // Surface d'arrière-plan pour des éléments secondaires
+    onBackground = Color(0xFFD9E0A4), // Couleur du texte sur fond d'arrière-plan
+    onSurface = Color(0xFF19485F)     // Couleur du texte sur Surface
 )
 
 private val LightColorPalette = lightColorScheme(
-    primary = Color.Black, // Couleur du texte principal en noir
-    onPrimary = Color.White, // Couleur du texte sur fond primaire
-    background = Color(0xFFD8DBE2), // Arrière-plan en blanc
-    surface = Color.LightGray, // Surface d'arrière-plan pour des éléments secondaires
-    onBackground = Color.Black, // Couleur du texte sur fond d'arrière-plan
-    onSurface = Color.Black, // Couleur du texte sur surface
-    secondary = Teal200 // Garder la couleur secondaire si elle convient
-    // Autres couleurs à personnaliser si nécessaire
+    primary = Color(0xFF19485F), // Couleur du texte principal en noir
+    onPrimary = Color(0xFF19485F), // Couleur du texte sur fond primaire
+    background = Color(0xFFD9E0A4), // Arrière-plan en blanc
+    surface = Color(0xFF19485F), // Surface d'arrière-plan pour des éléments secondaires
+    onBackground = Color(0xFF19485F), // Couleur du texte sur fond d'arrière-plan
+    onSurface = Color(0xFFD9E0A4)       //Couleur du texte sur Surface
 )
 
 @Composable

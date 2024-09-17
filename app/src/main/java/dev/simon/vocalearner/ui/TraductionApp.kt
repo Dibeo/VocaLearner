@@ -53,7 +53,14 @@ fun TranslationScreen(context: Context) {
 
         Spacer(modifier= Modifier.height((20.dp)))
 
-        ChangeWordButton(onChangeWord = {currentWord = wordList.random()})
+        Row(modifier = Modifier
+            .padding(16.dp)){
+            ChangeWordButton(onChangeWord = {currentWord = wordList.random()})
+
+            Spacer(modifier = Modifier.width((25.dp)))
+
+            ShowAnswerButton(answer = currentWord.second)
+        }
     }
 }
 
@@ -83,15 +90,43 @@ fun UserInputField(userInput: String, onInputChange: (String) -> Unit) {
 
 @Composable
 fun CheckButton(onCheck: () -> Unit) {
-    Button(onClick = onCheck) {
+    Button(
+        onClick = onCheck,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.surface, // Arrière-plan du bouton
+            contentColor = MaterialTheme.colorScheme.onSurface  // Couleur du texte
+        )
+    ) {
         Text("Check")
     }
 }
 
 @Composable
 fun ChangeWordButton(onChangeWord: () -> Unit) {
-    Button(onClick = onChangeWord) {
+    Button(
+        onClick = onChangeWord,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.surface, // Arrière-plan du bouton
+            contentColor = MaterialTheme.colorScheme.onSurface  // Couleur du texte
+        )
+    ) {
         Text("Change Word")
+    }
+}
+
+@Composable
+fun ShowAnswerButton(answer: String) {
+    Button(
+        onClick = {
+            // Affiche simplement la réponse correcte dans un message
+            println("Correct answer: $answer")
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.surface, // Arrière-plan du bouton
+            contentColor = MaterialTheme.colorScheme.onSurface  // Couleur du texte
+        )
+    ) {
+        Text("Show Answer")
     }
 }
 
