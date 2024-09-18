@@ -81,7 +81,7 @@ fun TraductionApp(context: Context) {
             }
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         ButtonComposable(
             text = "Check",
@@ -105,7 +105,7 @@ fun TraductionApp(context: Context) {
             }
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         FeedbackMessage(feedbackMessage)
 
@@ -151,9 +151,9 @@ fun TraductionApp(context: Context) {
 @Composable
 fun DisplayWord(word: String, isFrenchToEnglish: Boolean) {
     val displayText = if (isFrenchToEnglish) {
-        "Translate to English the word: $word"
+        "Translate to English : $word"
     } else {
-        "Translate to French the word : $word"
+        "Translate to French : $word"
     }
     Text(text = displayText, style = MaterialTheme.typography.titleMedium)
 }
