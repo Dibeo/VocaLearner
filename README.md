@@ -1,5 +1,9 @@
 ### VocaLearner for language
 
+This is an help to learn vocabulary coded in Kotlin.
+
+## Vocabulary List
+
 | Anglais                        | Français                                                       |
 |--------------------------------|----------------------------------------------------------------|
 | account manager                | chargé de clientèle                                            |
