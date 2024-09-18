@@ -21,7 +21,6 @@ fun TranslationScreen(context: Context) {
     var currentWord by remember { mutableStateOf(wordList.random()) }
     var userInput by remember { mutableStateOf("") }
     var feedbackMessage by remember { mutableStateOf("") }
-    var showAnswer by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -38,7 +37,9 @@ fun TranslationScreen(context: Context) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        CheckButton(onCheck = {
+        ButtonComposable(
+            text = "Check",
+            onClick = {
             feedbackMessage = if (userInput.lowercase() == currentWord.second.lowercase()) {
                 currentWord = wordList.random() // Si correct, choisir un nouveau mot
                 userInput = "" // Réinitialiser le champ de saisie
@@ -46,7 +47,6 @@ fun TranslationScreen(context: Context) {
             } else {
                 "Incorrect! Try again."
             }
-            showAnswer = ""
         })
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -57,29 +57,40 @@ fun TranslationScreen(context: Context) {
 
         Row(modifier = Modifier
             .padding(16.dp)){
-            ChangeWordButton(onChangeWord = {
-                currentWord = wordList.random()
-                showAnswer = ""
+            ButtonComposable(
+                text = "Change Word",
+                onClick = {
+                    currentWord = wordList.random()
+                    feedbackMessage = ""
             })
 
             Spacer(modifier = Modifier.width((25.dp)))
 
-            ShowAnswerButton(onShowAnswer = {showAnswer = currentWord.second})
+            ButtonComposable(
+                text = "Show Answer",
+                onClick = {feedbackMessage = currentWord.second})
         }
 
         Spacer(modifier = Modifier.height(20.dp))
-
-        if (showAnswer.isNotEmpty()) {
-            Text(text = "Correct answer: $showAnswer", style = MaterialTheme.typography.bodyLarge) // Affiche la réponse
-        }
     }
 }
 
+/**
+ * Display the french word
+ *
+ * @param String
+ */
 @Composable
 fun FrenchWordDisplay(word: String) {
     Text(text = "Translate the word: $word", style = MaterialTheme.typography.titleMedium)
 }
 
+/**
+ * Manage the input field
+ *
+ * @param String
+ * @param function
+ */
 @Composable
 fun UserInputField(userInput: String, onInputChange: (String) -> Unit) {
     BasicTextField(
@@ -99,42 +110,21 @@ fun UserInputField(userInput: String, onInputChange: (String) -> Unit) {
     )
 }
 
+/**
+ * Button object for the check button
+ *
+ * @param function to check if the word is correct or not
+ */
 @Composable
-fun CheckButton(onCheck: () -> Unit) {
+fun ButtonComposable(text : String, onClick: () -> Unit) {
     Button(
-        onClick = onCheck,
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.surface, // Arrière-plan du bouton
             contentColor = MaterialTheme.colorScheme.onSurface  // Couleur du texte
         )
     ) {
-        Text("Check")
-    }
-}
-
-@Composable
-fun ChangeWordButton(onChangeWord: () -> Unit) {
-    Button(
-        onClick = onChangeWord,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surface, // Arrière-plan du bouton
-            contentColor = MaterialTheme.colorScheme.onSurface  // Couleur du texte
-        )
-    ) {
-        Text("Change Word")
-    }
-}
-
-@Composable
-fun ShowAnswerButton(onShowAnswer: () -> Unit) {
-    Button(
-        onClick = onShowAnswer,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surface, // Arrière-plan du bouton
-            contentColor = MaterialTheme.colorScheme.onSurface  // Couleur du texte
-        )
-    ) {
-        Text("Show Answer")
+        Text(text)
     }
 }
 
