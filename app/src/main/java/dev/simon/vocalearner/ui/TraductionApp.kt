@@ -21,6 +21,7 @@ fun TranslationScreen(context: Context) {
     var currentWord by remember { mutableStateOf(wordList.random()) }
     var userInput by remember { mutableStateOf("") }
     var feedbackMessage by remember { mutableStateOf("") }
+    var showAnswer by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -45,6 +46,7 @@ fun TranslationScreen(context: Context) {
             } else {
                 "Incorrect! Try again."
             }
+            showAnswer = ""
         })
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -55,11 +57,20 @@ fun TranslationScreen(context: Context) {
 
         Row(modifier = Modifier
             .padding(16.dp)){
-            ChangeWordButton(onChangeWord = {currentWord = wordList.random()})
+            ChangeWordButton(onChangeWord = {
+                currentWord = wordList.random()
+                showAnswer = ""
+            })
 
             Spacer(modifier = Modifier.width((25.dp)))
 
-            ShowAnswerButton(answer = currentWord.second)
+            ShowAnswerButton(onShowAnswer = {showAnswer = currentWord.second})
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        if (showAnswer.isNotEmpty()) {
+            Text(text = "Correct answer: $showAnswer", style = MaterialTheme.typography.bodyLarge) // Affiche la réponse
         }
     }
 }
@@ -115,12 +126,9 @@ fun ChangeWordButton(onChangeWord: () -> Unit) {
 }
 
 @Composable
-fun ShowAnswerButton(answer: String) {
+fun ShowAnswerButton(onShowAnswer: () -> Unit) {
     Button(
-        onClick = {
-            // Affiche simplement la réponse correcte dans un message
-            println("Correct answer: $answer")
-        },
+        onClick = onShowAnswer,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.surface, // Arrière-plan du bouton
             contentColor = MaterialTheme.colorScheme.onSurface  // Couleur du texte

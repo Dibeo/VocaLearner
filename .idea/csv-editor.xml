@@ -24,13 +24,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\app\src\main\res\raw\words.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
       </map>
     </option>
   </component>
