@@ -12,11 +12,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.simon.vocalearner.ui.theme.TraductionAppTheme
-import dev.simon.vocalearner.utils.matchWordsById // Import your new CSV matching function
-import dev.simon.vocalearner.R // Import the R class for accessing raw resources
+import dev.simon.vocalearner.utils.matchWordsById
 
 @Composable
-fun TranslationScreen(context: Context) {
+fun TraductionApp(context: Context) {
     val wordList by remember { mutableStateOf(matchWordsById(context)) } // Utilise la nouvelle fonction
     var currentWord by remember { mutableStateOf(wordList.random()) }
     var userInput by remember { mutableStateOf("") }
@@ -142,6 +141,6 @@ fun FeedbackMessage(message: String) {
 fun PreviewTranslationScreen() {
     TraductionAppTheme {
         // Pass a mocked list for preview
-        TranslationScreen(context = LocalContext.current) // Note: `LocalContext.current` for preview is not applicable. Replace with context in preview.
+        TraductionApp(context = LocalContext.current) // Note: `LocalContext.current` for preview is not applicable. Replace with context in preview.
     }
 }
