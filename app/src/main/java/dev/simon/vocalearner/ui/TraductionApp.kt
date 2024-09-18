@@ -4,11 +4,16 @@ import android.content.Context
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.simon.vocalearner.ui.theme.TraductionAppTheme
@@ -37,7 +42,19 @@ fun TraductionApp(context: Context) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        UserInputField(userInput = userInput, onInputChange = { userInput = it })
+        UserInputField(
+            userInput = userInput,
+            onInputChange = { userInput = it },
+            onDone = {
+                feedbackMessage = if (userInput.lowercase() == currentWord.second.lowercase()) {
+                    currentWord = wordList.random() // Si correct, choisir un nouveau mot
+                    userInput = "" // Réinitialiser le champ de saisie
+                    "Correct!"
+                } else {
+                    "Incorrect! Try again."
+                }
+            }
+        )
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -103,9 +120,12 @@ fun FrenchWordDisplay(word: String) {
  *
  * @param String
  * @param function
+ * @param function
  */
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun UserInputField(userInput: String, onInputChange: (String) -> Unit) {
+fun UserInputField(userInput: String, onInputChange: (String) -> Unit, onDone : () -> Unit) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     BasicTextField(
         value = userInput,
         onValueChange = onInputChange,
@@ -114,6 +134,14 @@ fun UserInputField(userInput: String, onInputChange: (String) -> Unit) {
             .padding(16.dp)
             .border(1.dp, MaterialTheme.colorScheme.primary)
             .padding(8.dp),
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                onDone()
+            }
+        ),
         decorationBox = { innerTextField ->
             if (userInput.isEmpty()) {
                 Text("Enter the English translation", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
@@ -144,6 +172,8 @@ fun ButtonComposable(text : String, onClick: () -> Unit) {
 
 /**
  * send message method with personalized style
+ *
+ * @param string
  */
 @Composable
 fun FeedbackMessage(message: String) {
