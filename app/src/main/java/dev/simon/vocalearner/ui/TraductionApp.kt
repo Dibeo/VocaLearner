@@ -28,6 +28,11 @@ fun TraductionApp(context: Context) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        TitleCompose()
+
+        Spacer(modifier = Modifier.height(50.dp))
+
         FrenchWordDisplay(word = currentWord.first) // Affiche le mot français
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -67,11 +72,20 @@ fun TraductionApp(context: Context) {
 
             ButtonComposable(
                 text = "Show Answer",
-                onClick = {feedbackMessage = currentWord.second})
+                onClick = {feedbackMessage = "Answer is : ${currentWord.second}"}
+            )
         }
 
         Spacer(modifier = Modifier.height(20.dp))
     }
+}
+
+/**
+ * Display the title
+ */
+@Composable
+fun TitleCompose(){
+    Text(text = "VocaLearner", style = MaterialTheme.typography.headlineLarge)
 }
 
 /**
