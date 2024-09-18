@@ -21,8 +21,10 @@ import dev.simon.vocalearner.utils.matchWordsById
 
 @Composable
 fun TraductionApp(context: Context) {
-    val wordList by remember { mutableStateOf(matchWordsById(context)) } // Utilise la nouvelle fonction
-    var currentWord by remember { mutableStateOf(wordList.random()) }
+    val (frenchWordsList, englishWordsList) = matchWordsById(context)
+    var currentIndex by remember { mutableStateOf(frenchWordsList.indices.random()) }
+    var currentFrenchWord by remember { mutableStateOf(frenchWordsList[currentIndex].first()) } // Le premier mot de la liste française
+    var currentEnglishWords by remember { mutableStateOf(englishWordsList[currentIndex]) }
     var userInput by remember { mutableStateOf("") }
     var feedbackMessage by remember { mutableStateOf("") }
 
@@ -38,7 +40,7 @@ fun TraductionApp(context: Context) {
 
         Spacer(modifier = Modifier.height(50.dp))
 
-        FrenchWordDisplay(word = currentWord.first) // Affiche le mot français
+        FrenchWordDisplay(word = currentFrenchWord)
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -46,9 +48,11 @@ fun TraductionApp(context: Context) {
             userInput = userInput,
             onInputChange = { userInput = it },
             onDone = {
-                feedbackMessage = if (userInput.lowercase() == currentWord.second.lowercase()) {
-                    currentWord = wordList.random() // Si correct, choisir un nouveau mot
-                    userInput = "" // Réinitialiser le champ de saisie
+                feedbackMessage = if (currentEnglishWords.any { it.equals(userInput, ignoreCase = true) }) {
+                    currentIndex = frenchWordsList.indices.random()
+                    currentFrenchWord = frenchWordsList[currentIndex].first()
+                    currentEnglishWords = englishWordsList[currentIndex]
+                    userInput = ""
                     "Correct!"
                 } else {
                     "Incorrect! Try again."
@@ -61,35 +65,43 @@ fun TraductionApp(context: Context) {
         ButtonComposable(
             text = "Check",
             onClick = {
-            feedbackMessage = if (userInput.lowercase() == currentWord.second.lowercase()) {
-                currentWord = wordList.random() // Si correct, choisir un nouveau mot
-                userInput = "" // Réinitialiser le champ de saisie
-                "Correct!"
-            } else {
-                "Incorrect! Try again."
+                feedbackMessage = if (currentEnglishWords.any { it.equals(userInput, ignoreCase = true) }) {
+                    // Si la réponse est correcte, choisir un nouveau mot
+                    currentIndex = frenchWordsList.indices.random()
+                    currentFrenchWord = frenchWordsList[currentIndex].first() // Le premier mot dans la liste des synonymes
+                    currentEnglishWords = englishWordsList[currentIndex]
+                    userInput = ""
+                    "Correct!"
+                } else {
+                    "Incorrect! Try again."
+                }
             }
-        })
+        )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         FeedbackMessage(feedbackMessage)
 
-        Spacer(modifier= Modifier.height((20.dp)))
+        Spacer(modifier = Modifier.height(20.dp))
 
-        Row(modifier = Modifier
-            .padding(16.dp)){
+        Row(modifier = Modifier.padding(16.dp)) {
             ButtonComposable(
                 text = "Change Word",
                 onClick = {
-                    currentWord = wordList.random()
+                    currentIndex = frenchWordsList.indices.random()
+                    currentFrenchWord = frenchWordsList[currentIndex].first()
+                    currentEnglishWords = englishWordsList[currentIndex]
                     feedbackMessage = ""
-            })
+                }
+            )
 
-            Spacer(modifier = Modifier.width((25.dp)))
+            Spacer(modifier = Modifier.width(25.dp))
 
             ButtonComposable(
                 text = "Show Answer",
-                onClick = {feedbackMessage = "Answer is : ${currentWord.second}"}
+                onClick = {
+                    feedbackMessage = "Answer is: ${currentEnglishWords.joinToString(", ")}"
+                }
             )
         }
 
@@ -101,7 +113,7 @@ fun TraductionApp(context: Context) {
  * Display the title
  */
 @Composable
-fun TitleCompose(){
+fun TitleCompose() {
     Text(text = "VocaLearner", style = MaterialTheme.typography.headlineLarge)
 }
 
@@ -124,7 +136,7 @@ fun FrenchWordDisplay(word: String) {
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun UserInputField(userInput: String, onInputChange: (String) -> Unit, onDone : () -> Unit) {
+fun UserInputField(userInput: String, onInputChange: (String) -> Unit, onDone: () -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
     BasicTextField(
         value = userInput,
@@ -139,6 +151,7 @@ fun UserInputField(userInput: String, onInputChange: (String) -> Unit, onDone : 
         ),
         keyboardActions = KeyboardActions(
             onDone = {
+                keyboardController?.hide()
                 onDone()
             }
         ),
@@ -157,7 +170,7 @@ fun UserInputField(userInput: String, onInputChange: (String) -> Unit, onDone : 
  * @param function to check if the word is correct or not
  */
 @Composable
-fun ButtonComposable(text : String, onClick: () -> Unit) {
+fun ButtonComposable(text: String, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
@@ -169,9 +182,8 @@ fun ButtonComposable(text : String, onClick: () -> Unit) {
     }
 }
 
-
 /**
- * send message method with personalized style
+ * Send message method with personalized style
  *
  * @param string
  */
@@ -184,7 +196,6 @@ fun FeedbackMessage(message: String) {
 @Composable
 fun PreviewTranslationScreen() {
     TraductionAppTheme {
-        // Pass a mocked list for preview
-        TraductionApp(context = LocalContext.current) // Note: `LocalContext.current` for preview is not applicable. Replace with context in preview.
+        TraductionApp(context = LocalContext.current)
     }
 }
