@@ -214,7 +214,6 @@ fun UserInputField(userInput: String, onInputChange: (String) -> Unit, onDone: (
         ),
         keyboardActions = KeyboardActions(
             onDone = {
-                keyboardController?.hide()
                 onDone()
             }
         ),
