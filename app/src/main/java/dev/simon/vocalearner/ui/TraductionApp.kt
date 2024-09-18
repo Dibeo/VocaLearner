@@ -18,13 +18,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.simon.vocalearner.ui.theme.TraductionAppTheme
 import dev.simon.vocalearner.utils.matchWordsById
+import kotlin.random.Random
+import java.text.Normalizer
 
 @Composable
 fun TraductionApp(context: Context) {
     val (frenchWordsList, englishWordsList) = matchWordsById(context)
     var currentIndex by remember { mutableStateOf(frenchWordsList.indices.random()) }
-    var currentFrenchWord by remember { mutableStateOf(frenchWordsList[currentIndex].first()) } // Le premier mot de la liste française
-    var currentEnglishWords by remember { mutableStateOf(englishWordsList[currentIndex]) }
+    var isFrenchToEnglish by remember { mutableStateOf(Random.nextBoolean()) }
+    var currentFrenchWord by remember { mutableStateOf("") }
+    var currentEnglishWords by remember { mutableStateOf(emptyList<String>()) }
+
+    LaunchedEffect(currentIndex, isFrenchToEnglish) {
+        if (isFrenchToEnglish) {
+            currentFrenchWord = frenchWordsList[currentIndex].first()
+            currentEnglishWords = englishWordsList[currentIndex]
+        } else {
+            currentFrenchWord = englishWordsList[currentIndex].first()
+            currentEnglishWords = frenchWordsList[currentIndex]
+        }
+    }
+
     var userInput by remember { mutableStateOf("") }
     var feedbackMessage by remember { mutableStateOf("") }
 
@@ -40,7 +54,7 @@ fun TraductionApp(context: Context) {
 
         Spacer(modifier = Modifier.height(50.dp))
 
-        FrenchWordDisplay(word = currentFrenchWord)
+        DisplayWord(word = currentFrenchWord, isFrenchToEnglish = isFrenchToEnglish)
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -48,10 +62,17 @@ fun TraductionApp(context: Context) {
             userInput = userInput,
             onInputChange = { userInput = it },
             onDone = {
-                feedbackMessage = if (currentEnglishWords.any { it.equals(userInput, ignoreCase = true) }) {
+                feedbackMessage = if (isAnswerCorrect(userInput, currentEnglishWords)) {
+                    // Si la réponse est correcte, choisir un nouveau mot et une nouvelle direction
                     currentIndex = frenchWordsList.indices.random()
-                    currentFrenchWord = frenchWordsList[currentIndex].first()
-                    currentEnglishWords = englishWordsList[currentIndex]
+                    isFrenchToEnglish = Random.nextBoolean()
+                    if (isFrenchToEnglish) {
+                        currentFrenchWord = frenchWordsList[currentIndex].first()
+                        currentEnglishWords = englishWordsList[currentIndex]
+                    } else {
+                        currentFrenchWord = englishWordsList[currentIndex].first()
+                        currentEnglishWords = frenchWordsList[currentIndex]
+                    }
                     userInput = ""
                     "Correct!"
                 } else {
@@ -65,11 +86,17 @@ fun TraductionApp(context: Context) {
         ButtonComposable(
             text = "Check",
             onClick = {
-                feedbackMessage = if (currentEnglishWords.any { it.equals(userInput, ignoreCase = true) }) {
-                    // Si la réponse est correcte, choisir un nouveau mot
+                feedbackMessage = if (isAnswerCorrect(userInput, currentEnglishWords)) {
+                    // Si la réponse est correcte, choisir un nouveau mot et une nouvelle direction
                     currentIndex = frenchWordsList.indices.random()
-                    currentFrenchWord = frenchWordsList[currentIndex].first() // Le premier mot dans la liste des synonymes
-                    currentEnglishWords = englishWordsList[currentIndex]
+                    isFrenchToEnglish = Random.nextBoolean()
+                    if (isFrenchToEnglish) {
+                        currentFrenchWord = frenchWordsList[currentIndex].first()
+                        currentEnglishWords = englishWordsList[currentIndex]
+                    } else {
+                        currentFrenchWord = englishWordsList[currentIndex].first()
+                        currentEnglishWords = frenchWordsList[currentIndex]
+                    }
                     userInput = ""
                     "Correct!"
                 } else {
@@ -89,8 +116,14 @@ fun TraductionApp(context: Context) {
                 text = "Change Word",
                 onClick = {
                     currentIndex = frenchWordsList.indices.random()
-                    currentFrenchWord = frenchWordsList[currentIndex].first()
-                    currentEnglishWords = englishWordsList[currentIndex]
+                    isFrenchToEnglish = Random.nextBoolean()
+                    if (isFrenchToEnglish) {
+                        currentFrenchWord = frenchWordsList[currentIndex].first()
+                        currentEnglishWords = englishWordsList[currentIndex]
+                    } else {
+                        currentFrenchWord = englishWordsList[currentIndex].first()
+                        currentEnglishWords = frenchWordsList[currentIndex]
+                    }
                     feedbackMessage = ""
                 }
             )
@@ -110,21 +143,51 @@ fun TraductionApp(context: Context) {
 }
 
 /**
+ * Display the word depending on the direction of translation
+ *
+ * @param word The word to be displayed
+ * @param isFrenchToEnglish True if translating from French to English, False otherwise
+ */
+@Composable
+fun DisplayWord(word: String, isFrenchToEnglish: Boolean) {
+    val displayText = if (isFrenchToEnglish) {
+        "Translate to English the word: $word"
+    } else {
+        "Translate to French the word : $word"
+    }
+    Text(text = displayText, style = MaterialTheme.typography.titleMedium)
+}
+
+/**
+ * Normalize a string by removing accents and converting to lower case
+ *
+ * @param input The string to normalize
+ * @return The normalized string
+ */
+fun normalizeString(input: String): String {
+    return Normalizer.normalize(input, Normalizer.Form.NFD)
+        .replace("[\\p{InCombiningDiacriticalMarks}]".toRegex(), "")
+        .lowercase()
+}
+
+/**
+ * Check if the user's answer is correct
+ *
+ * @param userInput The user's input
+ * @param correctAnswers The list of correct answers
+ * @return True if the answer is correct, False otherwise
+ */
+fun isAnswerCorrect(userInput: String, correctAnswers: List<String>): Boolean {
+    val normalizedUserInput = normalizeString(userInput)
+    return correctAnswers.any { normalizeString(it) == normalizedUserInput }
+}
+
+/**
  * Display the title
  */
 @Composable
 fun TitleCompose() {
     Text(text = "VocaLearner", style = MaterialTheme.typography.headlineLarge)
-}
-
-/**
- * Display the french word
- *
- * @param String
- */
-@Composable
-fun FrenchWordDisplay(word: String) {
-    Text(text = "Translate the word: $word", style = MaterialTheme.typography.titleMedium)
 }
 
 /**
@@ -157,7 +220,7 @@ fun UserInputField(userInput: String, onInputChange: (String) -> Unit, onDone: (
         ),
         decorationBox = { innerTextField ->
             if (userInput.isEmpty()) {
-                Text("Enter the English translation", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
+                Text("Enter your translation", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f))
             }
             innerTextField()
         }
