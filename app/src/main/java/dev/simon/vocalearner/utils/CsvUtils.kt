@@ -31,28 +31,46 @@ fun readCsvFromRaw(context: Context, rawResId: Int): List<Pair<String, List<Stri
 }
 
 // Fonction pour faire correspondre les mots par ID et retourner deux listes de mots et synonymes pour chaque langue
-fun matchWordsById(context: Context): Pair<List<List<String>>, List<List<String>>> {
-    val englishWords = readCsvFromRaw(context, R.raw.english_words) // CSV pour les mots en anglais
-    val frenchWords = readCsvFromRaw(context, R.raw.french_words)   // CSV pour les mots en français
-
-    val idToEnglishMap = englishWords.groupBy { it.first } // Groupement par identifiant (ID, mots anglais)
-    val idToFrenchMap = frenchWords.groupBy { it.first }   // Groupement par identifiant (ID, mots français)
-
+fun matchWordsById(context: Context, weeks: List<String>): Pair<List<List<String>>, List<List<String>>> {
     val frenchList = mutableListOf<List<String>>()
     val englishList = mutableListOf<List<String>>()
+    if (weeks.isEmpty()) {
+        val t1 :List<String> = listOf("vide","néant");
+        val t2 :List<String> = listOf("empty")
+        frenchList.add(t1)
+        englishList.add(t2)
+        return Pair(frenchList, englishList)
+    }
 
-    // Associer les mots basés sur l'ID
-    idToEnglishMap.forEach { (id, englishEntry) ->
-        val frenchEntry = idToFrenchMap[id]
-        if (frenchEntry != null) {
-            // On suppose qu'il n'y a qu'un seul élément dans chaque liste par ID
-            val englishWordsAndSynonyms = englishEntry.first().second
-            val frenchWordsAndSynonyms = frenchEntry.first().second
+    for (week in weeks) {
+        // Générer dynamiquement les noms des fichiers CSV
+        val englishResId = context.resources.getIdentifier("${week}_english_words", "raw", context.packageName)
+        val frenchResId = context.resources.getIdentifier("${week}_french_words", "raw", context.packageName)
 
-            englishList.add(englishWordsAndSynonyms) // Ajouter les mots et synonymes anglais
-            frenchList.add(frenchWordsAndSynonyms)   // Ajouter les mots et synonymes français
+        // Lire les fichiers CSV si les ressources existent
+        if (englishResId != 0 && frenchResId != 0) {
+            val englishWords = readCsvFromRaw(context, englishResId) // CSV pour les mots en anglais
+            val frenchWords = readCsvFromRaw(context, frenchResId)   // CSV pour les mots en français
+
+            val idToEnglishMap = englishWords.groupBy { it.first } // Groupement par identifiant (ID, mots anglais)
+            val idToFrenchMap = frenchWords.groupBy { it.first }   // Groupement par identifiant (ID, mots français)
+
+            // Associer les mots basés sur l'ID
+            idToEnglishMap.forEach { (id, englishEntry) ->
+                val frenchEntry = idToFrenchMap[id]
+                if (frenchEntry != null) {
+                    // On suppose qu'il n'y a qu'un seul élément dans chaque liste par ID
+                    val englishWordsAndSynonyms = englishEntry.first().second
+                    val frenchWordsAndSynonyms = frenchEntry.first().second
+
+                    englishList.add(englishWordsAndSynonyms) // Ajouter les mots et synonymes anglais
+                    frenchList.add(frenchWordsAndSynonyms)   // Ajouter les mots et synonymes français
+                }
+            }
         }
     }
+
+
 
     return Pair(frenchList, englishList) // Retourner les deux listes
 }
