@@ -44,8 +44,10 @@ fun matchWordsById(context: Context, weeks: List<String>): Pair<List<List<String
 
     for (week in weeks) {
         // Générer dynamiquement les noms des fichiers CSV
+
         val englishResId = context.resources.getIdentifier("${week}_english_words", "raw", context.packageName)
         val frenchResId = context.resources.getIdentifier("${week}_french_words", "raw", context.packageName)
+        Log.i("CsvUtils", "charging : $week")
 
         // Lire les fichiers CSV si les ressources existent
         if (englishResId != 0 && frenchResId != 0) {

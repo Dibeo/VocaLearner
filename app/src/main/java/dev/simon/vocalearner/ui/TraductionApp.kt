@@ -34,7 +34,7 @@ fun TraductionApp(context: Context) {
     var currentEnglishWords by remember { mutableStateOf(emptyList<String>()) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
-    val availableWeeks = listOf("Semaine 1", "Semaine 2", "Semaine 3", "Semaine 4")
+    val availableWeeks = listOf("week1", "week2", "week3", "week4")
 
     LaunchedEffect(currentIndex, isFrenchToEnglish) {
         if (isFrenchToEnglish) {
@@ -175,6 +175,15 @@ fun TraductionApp(context: Context) {
     }
 }
 
+/**
+ * Drawer gestion
+ *
+ * @param List<String> liste of available week
+ * @param List<String> list of checked week
+ * @param (List<String>) -> Unit action to do
+ * @param CoroutineScope permit a jonction between functions
+ * @param DrawerState state of the drawer
+ */
 @Composable
 fun DrawerContent(
     availableWeeks: List<String>,
@@ -224,9 +233,9 @@ fun DrawerContent(
                 onWeeksSelected(selectedWeeksState.toList())
                 scope.launch { drawerState.close() }
             },
-            modifier = Modifier.align(Alignment.End)
+            modifier = Modifier.align(Alignment.Start)
         ) {
-            Text("Valider")
+            Text("Valider", style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
