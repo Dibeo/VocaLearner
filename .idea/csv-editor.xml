@@ -59,6 +59,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\app\src\main\res\raw\week4_english_words.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\app\src\main\res\raw\week4_french_words.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>
