@@ -34,7 +34,7 @@ fun TraductionApp(context: Context) {
     var currentEnglishWords by remember { mutableStateOf(emptyList<String>()) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
-    val availableWeeks = listOf("week1", "week2", "week3", "week4", "week5")
+    val availableWeeks = listOf("week1", "week2", "week3", "week4", "week5", "week6", "week7", "week8")
 
     LaunchedEffect(currentIndex, isFrenchToEnglish) {
         if (isFrenchToEnglish) {
