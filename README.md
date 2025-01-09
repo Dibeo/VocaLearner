@@ -1,4 +1,4 @@
-[](./vocalearner_illustration_ia.jpg)
+[](vocalearner_illustration_ia.jpg)
 
 ### VocaLearner for language
 
