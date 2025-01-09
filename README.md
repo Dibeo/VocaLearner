@@ -1,3 +1,5 @@
+(./vocalearner_illustration_ia.jpg)
+
 ### VocaLearner for language
 
 This is an help to learn vocabulary coded in Kotlin.
