@@ -1,5 +1,5 @@
 ![](illustration.png)
-
+[![wakatime](https://wakatime.com/badge/user/018c21c3-001e-4fd3-93ef-f7f9ec6d1fdb/project/a9eeadad-1235-4cfb-85fd-0353c6dcfd86.svg)](https://wakatime.com/badge/user/018c21c3-001e-4fd3-93ef-f7f9ec6d1fdb/project/a9eeadad-1235-4cfb-85fd-0353c6dcfd86)
 ### VocaLearner for language
 
 This is an help to learn vocabulary coded in Kotlin.
