@@ -27,7 +27,7 @@ jobs:
         uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
-          build-mode: auto
+          build-mode: autobuild
           packs: titouancharrier/cql-green-queries-${{ matrix.language }}
 
       - name: Perform CodeQL Analysis
